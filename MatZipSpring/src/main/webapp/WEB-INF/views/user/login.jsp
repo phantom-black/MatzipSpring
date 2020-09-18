@@ -10,4 +10,4 @@
 		</form>
 		<div><a href="/user/join">회원가입</a></div>
 	</div>
-</div>
+</div> 
