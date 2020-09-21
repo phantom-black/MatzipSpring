@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koreait.matzip.rest.RestMapper">
+	<insert id="insRest" parameterType="RestVO">
+		INSERT INTO t_restaurant
+		(nm, addr, lat, lng, cd_category, i_user)
+		VALUES
+		(#{nm}, #{addr}, #{lat}, #{lng}, 1, #{i_user})
+	</insert>
+
+	<select id="selRestList" parameterType="RestPARAM" resultType="RestDMI">
+		SELECT i_rest, nm, lat, lng
+		FROM t_restaurant
+		WHERE lat BETWEEN #{sw_lat} AND #{ne_lat}
+		AND lng BETWEEN #{sw_lng} AND #{ne_lng}
+	</select>
+</mapper>

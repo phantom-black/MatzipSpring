@@ -3,14 +3,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div id="sectionContainerCenter">
 	<div>
-		<form id="frm" action="/restaurant/restRegProc" method="post" onsubmit="return chkFrm()">
-			<div><input type="text" name="nm" placeholder="가게명"></div>
+		<form id="frm" action="/rest/reg" method="post" onsubmit="return chkFrm()">
+			<div><input type="text" name="nm" placeholder="가게명" value="${data.nm}"></div>
 			<div>
-				<input type="text" name="addr" placeholder="주소" onkeyup="changeAddr()" style="width:200px;">
+				<input type="text" name="addr" placeholder="주소"  value="${data.addr}" onkeyup="changeAddr()" style="width:200px;">
 				<button type="button" onclick="getLatLng()">좌표 가져오기</button><span id="resultGetLatLng"></span>
 			</div>
-			<input type="hidden" name="lat" value="0">
-			<input type="hidden" name="lng" value="0">
+			<input type="hidden" name="lat" value="${data.lat == null ? 0 : data.lat}">
+			<input type="hidden" name="lng" value="${data.lng == null ? 0 : data.lng}">
 			<div>
 				카테고리: 
 				<select name="cd_category">

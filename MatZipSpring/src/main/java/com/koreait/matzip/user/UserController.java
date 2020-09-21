@@ -1,15 +1,20 @@
 package com.koreait.matzip.user;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.koreait.matzip.Const;
 import com.koreait.matzip.ViewRef;
-import com.koreait.matzip.user.model.UserDTO;
+import com.koreait.matzip.user.model.UserPARAM;
 import com.koreait.matzip.user.model.UserVO;
 
 @Controller
@@ -22,19 +27,6 @@ public class UserController {
 	
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public String login(Model model, @RequestParam(required=false, defaultValue="0") int err) {
-		
-		if(err > 0) {
-			switch(err) {
-			case 2:
-				model.addAttribute("msg", "아이디 없음");
-				break;
-			case 3:
-				model.addAttribute("msg", "비밀번호 틀림");
-				break;
-			default:
-				model.addAttribute("msg", "에러발생");
-			}
-		}
 
 		model.addAttribute(Const.TITLE, "로그인");
 		model.addAttribute(Const.VIEW, "user/login");
@@ -42,16 +34,27 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/login", method = RequestMethod.POST)
-	public String login(UserDTO param) {
+	public String login(UserPARAM param, HttpSession hs, RedirectAttributes ra) {
 //		System.out.println("id: " + param.getUser_id());
 //		System.out.println("pw: " + param.getUser_pw());
 		
 		int result = service.login(param);
 		
-		if(result == 1) {
+		if(result == Const.SUCCESS) {
+			hs.setAttribute(Const.LOGIN_USER, param);
 			return "redirect:/rest/map";
 		}
-		return "redirect:/user/login?err=" + result;
+		String msg = null;
+		if(result == Const.NO_ID) {
+			msg = "아이디를 확인해 주세요.";
+		} else if(result == Const.NO_PW) {
+			msg = "비밀번호를 확인해 주세요.";
+		}
+		
+		param.setMsg(msg);
+		ra.addFlashAttribute("data", param); // 객체로 넘어감 + 주솟값에 쿼리스트링으로 값이 박히지 않음
+														// addFlashAttribute : session에 박고 쓰고 나면 알아서 세션에서 지움 == 마치 post처럼 쓸 수 있음
+		return "redirect:/user/login";
 	}
 	
 	@RequestMapping(value="/join", method = RequestMethod.GET)
@@ -74,13 +77,21 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/join", method = RequestMethod.POST)
-	public String join(UserVO param) {
+	public String join(UserVO param, RedirectAttributes ra) {
 		int result = service.join(param);
 		
 		if(result == 1) {
 			return "redirect:/user/login";
 		}
 		
-		return "redirect:/user/join?err=" + result;
+		ra.addAttribute("err", result); // 주솟값에 key값 value값 박아줌, 쿼리스트링
+		return "redirect:/user/join";
+	}
+	
+	@RequestMapping(value="/ajaxIdChk", method=RequestMethod.POST)
+	@ResponseBody // 이거 주면 jsp파일 찾지 않음, 이거 자체가 응답, 결과물
+	public String ajaxIdChk(@RequestBody UserPARAM param) {
+		int result = service.login(param);
+		return String.valueOf(result);
 	}
 }
