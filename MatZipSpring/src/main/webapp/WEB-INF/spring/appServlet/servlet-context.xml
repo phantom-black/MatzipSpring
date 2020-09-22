@@ -55,4 +55,12 @@
 	
 	<!-- base-package 아래로 @Mapper 찾을 것 -->
 	<mybatis-spring:scan base-package="com.koreait.matzip" />
+	
+	<interceptors>
+		<interceptor>
+			<mapping path="/**"/> <!-- mapping에 연결된 값 다 잡음 -->
+			<beans:bean class="com.koreait.matzip.LoginCheckInterceptor" />
+		</interceptor>
+	</interceptors>
+	
 </beans:beans>

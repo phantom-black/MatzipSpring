@@ -8,8 +8,14 @@ public class RestVO {
 	private double lng;
 	private int cd_category;
 	private int i_user;
+	private int hits;
 	
-	
+	public int getHits() {
+		return hits;
+	}
+	public void setHits(int hits) {
+		this.hits = hits;
+	}
 	public int getI_rest() {
 		return i_rest;
 	}

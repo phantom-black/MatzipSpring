@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.koreait.matzip.rest.RestMapper">
-	<insert id="insRest" parameterType="RestVO">
+	<insert id="insRest" parameterType="RestPARAM">
 		INSERT INTO t_restaurant
 		(nm, addr, lat, lng, cd_category, i_user)
 		VALUES
-		(#{nm}, #{addr}, #{lat}, #{lng}, 1, #{i_user})
+		(#{nm}, #{addr}, #{lat}, #{lng}, #{cd_category}, #{i_user})
 	</insert>
 
 	<select id="selRestList" parameterType="RestPARAM" resultType="RestDMI">
@@ -13,5 +13,27 @@
 		FROM t_restaurant
 		WHERE lat BETWEEN #{sw_lat} AND #{ne_lat}
 		AND lng BETWEEN #{sw_lng} AND #{ne_lng}
+	</select>
+	
+	<select id="selRest" parameterType="RestPARAM" resultType="RestDMI">
+		SELECT 
+			A.i_rest, A.nm, A.lat, A.lng, A.addr, A.i_user, A.hits
+			, ifnull(B.val, '') as cd_category_nm
+			, C.nm as user_nm
+			, ifnull(D.cnt, 0) as cnt_favorite
+		FROM t_restaurant A
+		LEFT JOIN c_code_d B
+			ON A.cd_category = B.cd
+			AND B.i_m = 1
+		LEFT JOIN t_user C
+			ON A.i_user = C.i_user
+		LEFT JOIN (
+			SELECT i_rest, COUNT(i_rest) as cnt
+			FROM t_user_favorite
+			WHERE i_rest = #{i_rest}
+			GROUP BY i_rest
+		) D
+		ON A.i_rest = D.i_rest
+		WHERE A.i_rest = #{i_rest} 
 	</select>
 </mapper>

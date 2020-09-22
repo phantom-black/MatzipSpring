@@ -55,8 +55,8 @@
 						<h1 class="restaurant_name">${data.nm}</h1>
 					</div>
 					<div class="status branch_none">
-						<span class="cnt hit">${data.cntHits}</span>
-						<span class="cnt favorite">${data.cntFavorite}</span>
+						<span class="cnt hit">${data.hits}</span>
+						<span class="cnt favorite">${data.cnt_favorite}</span>
 					</div>
 				</div>
 				<div>
@@ -70,6 +70,10 @@
 							<tr>
 								<th>카테고리</th>
 								<td>${data.cd_category_nm}</td>
+							</tr>
+							<tr>
+								<th>작성자</th>
+								<td>${data.user_nm}</td>
 							</tr>
 							<tr>
 								<th>메뉴</th>
@@ -150,7 +154,7 @@
 			
 			function isDel() {
 				if(confirm('삭제하시겠습니까?')) {
-					location.href = '/restaurant/restDetail?i_rest=' + ${data.i_rest}
+					location.href = '/rest/detail?i_rest=' + ${data.i_rest}
 				}
 			}
 		</script>

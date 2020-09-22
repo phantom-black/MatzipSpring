@@ -25,6 +25,12 @@ public class UserController {
 	// 정석대로는 UserService도 Interface로 만든 후 상속받아서 작성한 친구를 데려와야 함
 	private UserService service;
 	
+	@RequestMapping(value="/logout", method = RequestMethod.GET)
+	public String logout(HttpSession hs) {
+		hs.invalidate();
+		return "redirect:/";
+	}
+	
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public String login(Model model, @RequestParam(required=false, defaultValue="0") int err) {
 

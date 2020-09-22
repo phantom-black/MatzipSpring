@@ -1,5 +1,7 @@
 package com.koreait.matzip.rest;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -14,8 +16,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.koreait.matzip.Const;
 import com.koreait.matzip.SecurityUtils;
 import com.koreait.matzip.ViewRef;
+import com.koreait.matzip.rest.model.RestDMI;
 import com.koreait.matzip.rest.model.RestPARAM;
-import com.koreait.matzip.rest.model.RestVO;
 
 @Controller
 @RequestMapping("/rest")
@@ -31,8 +33,9 @@ public class RestController {
 		return ViewRef.TEMP_MENU_TEMP;
 	}
 	
-	@RequestMapping("/ajaxGetList")
-	@ResponseBody public String ajaxGetList(RestPARAM param) {
+	@RequestMapping(value="/ajaxGetList", produces = {"application/json; charset=UTF-8"})
+	@ResponseBody 
+	public List<RestDMI> ajaxGetList(RestPARAM param) {
 		System.out.println("sw_lat: " + param.getSw_lat());
 		System.out.println("sw_lng: " + param.getSw_lng());
 		System.out.println("ne_lat: " + param.getNe_lat());
@@ -41,25 +44,36 @@ public class RestController {
 		return service.selRestList(param);
 	}
 	
-	@RequestMapping("/reg")
+	@RequestMapping("/restReg")
 	public String restReg(Model model) {
-		model.addAttribute(Const.TITLE, "가게등록");
+		model.addAttribute("categoryList", service.selCategoryList());
+		
+		model.addAttribute(Const.TITLE, "가게 등록");
 		model.addAttribute(Const.VIEW, "rest/restReg");
-		return ViewRef.TEMP_DEFAULT;
+		return ViewRef.TEMP_MENU_TEMP;
 	}
 	
-	@RequestMapping(value="/reg", method = RequestMethod.POST)
-	public String restReg(RestVO param, HttpServletRequest request, RedirectAttributes ra) {
-		int i_user = SecurityUtils.getLoginUserPk(request);
-		param.setI_user(i_user);
+	@RequestMapping(value="/restReg", method = RequestMethod.POST)
+	public String restReg(RestPARAM param, HttpSession hs, RedirectAttributes ra) {
+		param.setI_user(SecurityUtils.getLoginUserPk(hs));
 		
 		int result = service.insRest(param);
 		
 		if(result != 1) {
 			ra.addFlashAttribute("data", param);
-			return "redirect:/rest/reg"; // 에러쓰
+			return "redirect:/rest/restReg"; // 에러쓰
 		}
 		
 		return "redirect:/rest/map";
+	}
+	
+	@RequestMapping("/detail")
+	public String detail(RestPARAM param, Model model) {
+		RestDMI data = service.selRest(param);
+		
+		model.addAttribute("data", data);
+		model.addAttribute(Const.TITLE, data.getNm()); // 가게명
+		model.addAttribute(Const.VIEW, "rest/restDetail");
+		return ViewRef.TEMP_MENU_TEMP; 
 	}
 }

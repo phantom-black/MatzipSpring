@@ -14,6 +14,9 @@
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	
 	<script>
+		
+		var markerList = [] // 마커 리스트 
+	
 		const options = { //지도를 생성할 때 필요한 기본 옵션
 			center: new kakao.maps.LatLng(35.865585, 128.592569), //지도의 중심좌표.
 			level: 5 //지도의 레벨(확대, 축소 정도)
@@ -24,6 +27,11 @@
 		console.log(map.getCenter())
 		
 		function getRestaurantList() {
+			// 마커 지우기
+			markerList.forEach(function(marker) {
+				marker.setMap(null)
+			})
+			
 			const bounds = map.getBounds()
 			const southWest = bounds.getSouthWest()
 			const northEast = bounds.getNorthEast()
@@ -51,7 +59,7 @@
 		
 		// getRestaurantList()
 		
-		kakao.maps.event.addListener(map, 'dragend', getRestaurantList)
+		kakao.maps.event.addListener(map, 'tilesloaded', getRestaurantList)
 		
 		// 마커 생성
 		function createMarker(item) {
@@ -89,16 +97,18 @@
 			});
 			*/
 			marker.setMap(map) 
+			
+			markerList.push(marker)
 		}
 		
 		function moveToDetail(i_rest) {
-			location.href = '/restaurant/restDetail?i_rest=' + i_rest
+			location.href = '/rest/detail?i_rest=' + i_rest
 		}
 		
 		function addEvent(target, type, callback) {
 			if(target.addEventListener) {
 				target.addEventListener(type, callback);
-			} else {
+			} else { // IE에는 addEventListener가 없음
 				target.attachEvent('on' + type, callback);
 			}
 		}
