@@ -4,10 +4,12 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	<context:property-placeholder location="classpath:config.properties" />
@@ -56,6 +58,14 @@
 	<!-- base-package 아래로 @Mapper 찾을 것 -->
 	<mybatis-spring:scan base-package="com.koreait.matzip" />
 	
+	<!-- tx: 트랜잭션 부분 시작, namespace에서 tx 체크할 것 -->
+	<beans:bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<beans:property name="dataSource" ref="dataSource" />
+	</beans:bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- tx: 트랜잭션 부분 끝 -->
+	
 	<interceptors>
 		<interceptor>
 			<mapping path="/**"/> <!-- mapping에 연결된 값 다 잡음 -->
@@ -63,4 +73,8 @@
 		</interceptor>
 	</interceptors>
 	
+	<!-- file Upload -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="maxUploadSize" value="5242880" /> <!-- 5MB -->
+	</beans:bean>
 </beans:beans>

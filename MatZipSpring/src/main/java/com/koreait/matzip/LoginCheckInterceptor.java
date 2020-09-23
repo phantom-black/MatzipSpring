@@ -41,7 +41,7 @@ public class LoginCheckInterceptor extends HandlerInterceptorAdapter {
 			}
 		case ViewRef.URI_REST: // rest
 			switch(uriArr[2]) {
-			case "restReg":
+			case "reg":
 				if(isLogout) { // 로그아웃 상태
 					response.sendRedirect("/user/login");
 					return false;
