@@ -15,6 +15,19 @@
 		FROM t_restaurant_recommend_menu
 		WHERE i_rest = #{i_rest}
 	</insert>
+	
+	<insert id="insRestMenu" parameterType="RestRecMenuVO">
+		INSERT INTO t_restaurant_menu
+		(i_rest, seq, menu_pic)
+		SELECT #{i_rest}, ifnull(max(seq), 0) + 1, #{menu_pic}
+		FROM t_restaurant_menu
+		WHERE i_rest = #{i_rest}
+	</insert>
+
+	<select id="selRestChkUser" parameterType="Integer" resultType="Integer">
+		SELECT i_user FROM t_restaurant
+		WHERE i_rest = #{i_rest}
+	</select>
 
 	<select id="selRestList" parameterType="RestPARAM" resultType="RestDMI">
 		SELECT i_rest, nm, lat, lng
@@ -42,7 +55,7 @@
 			GROUP BY i_rest
 		) D
 		ON A.i_rest = D.i_rest
-		WHERE A.i_rest = #{i_rest} 
+		WHERE A.i_rest = #{i_rest}
 	</select>
 	
 	<select id="selRestRecMenus" parameterType="RestPARAM" resultType="RestRecMenuVO">
@@ -55,6 +68,20 @@
 		</if>
 		WHERE A.i_rest = #{i_rest}
 		<if test="seq > 0"> <!-- 지울 메뉴 지정 --> 
+			AND A.seq = #{seq}
+		</if>
+	</select>
+	
+	<select id="selRestMenus" parameterType="RestPARAM" resultType="RestRecMenuVO">
+		SELECT A.seq, A.menu_pic
+		FROM t_restaurant_menu A
+		<if test="i_user > 0"> <!-- 작성자 체크 -->
+			INNER JOIN t_restaurant B
+			ON A.i_rest = B.i_rest
+			AND B.i_user = #{i_user}
+		</if>
+		WHERE A.i_rest = #{i_rest}
+		<if test="seq > 0"> <!-- 지울 메뉴 지정 -->
 			AND A.seq = #{seq}
 		</if>
 	</select>

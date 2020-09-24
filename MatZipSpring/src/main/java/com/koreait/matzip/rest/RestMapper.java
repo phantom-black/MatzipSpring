@@ -12,10 +12,13 @@ import com.koreait.matzip.rest.model.RestRecMenuVO;
 public interface RestMapper { // interface라서 메소드들 자동으로 public 들어감
 	int insRest(RestPARAM param);
 	int insRestRecMenu(RestRecMenuVO param);
+	int insRestMenu(RestRecMenuVO param);
 	
+	int selRestChkUser(int i_rest);
 	List<RestDMI> selRestList(RestPARAM param);
 	RestDMI selRest(RestPARAM param);
 	List<RestRecMenuVO> selRestRecMenus(RestPARAM param);
+	List<RestRecMenuVO> selRestMenus(RestPARAM param);
 	
 	int delRestRecMenu(RestPARAM param);
 	int delRestMenu(RestPARAM param);

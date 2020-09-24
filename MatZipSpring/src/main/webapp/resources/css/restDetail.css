@@ -32,7 +32,7 @@
 	height: 30px;
 }
 
-.recMenuContainer > .recMenuItem > .delIconContainer {
+.delIconContainer {
 	position: absolute;
 	top: 10px;
 	right: 10px;
@@ -45,10 +45,9 @@
 }
 
 .menuList .menuItem {
-	display: inline-block;
+	positon: relative;
 	width: 70px;
 	height: 70px;
-	color: white;
 }
 
 .menuList .menuItem:not(:first-child) {

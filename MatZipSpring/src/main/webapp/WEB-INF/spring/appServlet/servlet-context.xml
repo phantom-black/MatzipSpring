@@ -66,10 +66,18 @@
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	<!-- tx: 트랜잭션 부분 끝 -->
 	
+	<!-- 인터셉터 -->
 	<interceptors>
 		<interceptor>
 			<mapping path="/**"/> <!-- mapping에 연결된 값 다 잡음 -->
 			<beans:bean class="com.koreait.matzip.LoginCheckInterceptor" />
+		</interceptor>
+	</interceptors>
+	
+	<interceptors>
+		<interceptor>
+			<mapping path="/rest/**"/>
+			<beans:bean class="com.koreait.matzip.RestInterceptor" />
 		</interceptor>
 	</interceptors>
 	
