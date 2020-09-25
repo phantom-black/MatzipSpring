@@ -7,7 +7,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,6 +19,7 @@ import com.koreait.matzip.ViewRef;
 import com.koreait.matzip.rest.model.RestDMI;
 import com.koreait.matzip.rest.model.RestFile;
 import com.koreait.matzip.rest.model.RestPARAM;
+import com.koreait.matzip.rest.model.RestRecMenuVO;
 
 @Controller
 @RequestMapping("/rest")
@@ -73,14 +73,20 @@ public class RestController {
 	public String detail(RestPARAM param, Model model) {
 		RestDMI data = service.selRest(param);
 		
-		model.addAttribute("menuList", service.selRestMenus(param));
+//		model.addAttribute("menuList", service.selRestMenus(param));
 		model.addAttribute("recMenuList", service.selRestRecMenus(param));
 		model.addAttribute("data", data);
 		
-		model.addAttribute("css", new String[] {"restDetail"});
+		model.addAttribute("css", new String[] {"restDetail", "swiper-bundle.min"});
 		model.addAttribute(Const.TITLE, data.getNm()); // 가게명
 		model.addAttribute(Const.VIEW, "rest/restDetail");
 		return ViewRef.TEMP_MENU_TEMP; 
+	}
+	
+	@RequestMapping("/ajaxSelMenuList")
+	@ResponseBody
+	public List<RestRecMenuVO> ajaxSelMenuList(RestPARAM param) {
+		return service.selRestMenus(param);
 	}
 	
 	@RequestMapping("/del")
@@ -126,6 +132,11 @@ public class RestController {
 		String realPath = hs.getServletContext().getRealPath(path);
 		param.setI_user(SecurityUtils.getLoginUserPk(hs)); // 로그인 유저 pk 담기
 		return service.delRestRecMenu(param, realPath);
+	}
+	
+	@RequestMapping("/ajaxDelMenu")
+	@ResponseBody public int ajaxDelMenu(RestPARAM param) { // i_rest, seq, menu_pic
+		return service.delRestMenu(param);
 	}
 	
 	@RequestMapping(value="/menus")

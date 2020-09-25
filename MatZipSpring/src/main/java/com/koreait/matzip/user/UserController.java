@@ -48,7 +48,7 @@ public class UserController {
 		
 		if(result == Const.SUCCESS) {
 			hs.setAttribute(Const.LOGIN_USER, param);
-			return "redirect:/rest/map";
+			return "redirect:/";
 		}
 		String msg = null;
 		if(result == Const.NO_ID) {

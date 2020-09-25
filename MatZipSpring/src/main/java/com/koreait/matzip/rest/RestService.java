@@ -90,14 +90,6 @@ public class RestService {
 		mapper.delRest(param);
 	}
 	
-	public int delRestRecMenu(RestPARAM param) {
-		return mapper.delRestRecMenu(param);
-	}
-	
-	public int delRestMenu(RestPARAM param) {
-		return mapper.delRestMenu(param);
-	}
-	
 	public int insRecMenus(MultipartHttpServletRequest mReq) {
 		int i_user = SecurityUtils.getLoginUserPk(mReq.getSession());
 		int i_rest = Integer.parseInt(mReq.getParameter("i_rest"));
@@ -142,7 +134,7 @@ public class RestService {
 		if(list.size() == 1) {
 			RestRecMenuVO item = list.get(0);
 			
-			if(item.getMenu_pic() != null && !item.getMenu_pic().equals("")) { // 이미지 있음 -> 삭제!
+			if(item.getMenu_pic() != null && !"".equals(item.getMenu_pic())) { // 이미지 있음 -> 삭제!
 				File file = new File(realPath + item.getMenu_pic());
 				if(file.exists()) {
 					if(file.delete()) { // 삭제 안될 경우 대비해 기록으로 남겨놔야, delete() <- boolean 값 넘어옴
@@ -156,6 +148,19 @@ public class RestService {
 		}
 		
 		return mapper.delRestRecMenu(param);
+	}
+
+	public int delRestMenu(RestPARAM param) {
+		if(param.getMenu_pic() != null && !"".equals(param.getMenu_pic())) {
+			String path = Const.realPath + "/resources/img/rest/" + param.getI_rest() + "/menu/";
+			
+			if(FileUtils.delFile(path + param.getMenu_pic())) {
+				return mapper.delRestMenu(param);
+			} else {
+				return Const.FAIL;
+			}
+		}
+		return mapper.delRestMenu(param);
 	}
 	
 	private boolean _authFail(int i_rest, int i_user) { // 로그인한 사람의 i_user 값
