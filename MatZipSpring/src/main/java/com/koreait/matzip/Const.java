@@ -7,6 +7,7 @@ public class Const {
 	public static final String TITLE = "title";
 	
 	public static final String LOGIN_USER = "loginUser";
+	public static final String CURRENT_REST_READ_IP = "currentRestReadIp_";
 	
 	public static final int FAIL = 0;
 	public static final int SUCCESS = 1;

@@ -8,6 +8,13 @@
 		(#{user_id}, #{user_pw}, #{salt}, #{nm})
 	</insert>
 	
+	<insert id="insFavorite" parameterType="UserPARAM">
+		INSERT INTO t_user_favorite
+		(i_rest, i_user)
+		VALUES
+		(#{i_rest}, #{i_user})
+	</insert>
+	
 	<select id="selUser" parameterType="UserPARAM" resultType="UserDMI">
 		SELECT i_user, user_id, user_pw, salt, nm, profile_img, r_dt
 		FROM t_user
@@ -15,4 +22,10 @@
 		<if test="i_user > 0" > i_user = #{i_user}</if>
 		<if test = "user_id != null and user_id != ''"> user_id = #{user_id}</if>
 	</select>
+	
+	<delete id="delFavorite" parameterType="UserPARAM">
+		DELETE FROM t_user_favorite
+		WHERE i_rest = #{i_rest}
+		AND i_user = #{i_user}
+	</delete>
 </mapper>

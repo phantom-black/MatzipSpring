@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +36,23 @@ public class RestService {
 	public int insRest(RestPARAM param) {
 		return mapper.insRest(param);
 	}
-
+	
+	public void updAddHits(RestPARAM param, HttpServletRequest req) {
+		String myIp = req.getRemoteAddr();
+		ServletContext ctx = req.getServletContext(); // 어플리케이션은 공용, pageContext, request, session 은 개인용
+		
+		int i_user = SecurityUtils.getLoginUserPk(req);
+		
+		String currentRestReadIp = (String)ctx.getAttribute(Const.CURRENT_REST_READ_IP + param.getI_rest());
+		if(currentRestReadIp == null || !currentRestReadIp.equals(myIp)) {
+			
+			param.setI_user(i_user); // 내가 쓴 글이면 조회수 안 올라가게 쿼리문으로 막음
+			// 조회수 올림 처리 예정
+			mapper.updAddHits(param);
+			ctx.setAttribute(Const.CURRENT_REST_READ_IP + param.getI_rest(), myIp);
+		}
+	}
+	
 	public int insRestMenu(RestFile param, int i_user) {
 		if(_authFail(param.getI_rest(), i_user)) {
 			return Const.FAIL;
