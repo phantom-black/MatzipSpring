@@ -16,6 +16,11 @@ a {
 	text-decoration: none;
 }
 
+.font-NotoSans-500 {
+	font-family: 'Noto Sans KR', sans-serif;
+	font-weight: 500;
+}
+
 .ml5 { margin-left: 5px; }
 .ml10 { margin-left: 10px; }
 .ml15 { margin-left: 15px; }

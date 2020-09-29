@@ -86,7 +86,7 @@ public class RestController {
 		model.addAttribute("recMenuList", service.selRestRecMenus(param));
 		model.addAttribute("data", data);
 		
-		model.addAttribute("css", new String[] {"restDetail", "swiper-bundle.min"});
+		model.addAttribute(Const.CSS, new String[] {"restDetail", "swiper-bundle.min"});
 		model.addAttribute(Const.TITLE, data.getNm()); // 가게명
 		model.addAttribute(Const.VIEW, "rest/restDetail");
 		return ViewRef.TEMP_MENU_TEMP; 
